@@ -10,7 +10,7 @@ def password_strength(password):
     repeat_error = re.search(r"(.)\1\1", password) is not None
 
 
-    # Collect results (booleans add up like ints: True=1, False=0)
+    # Collect results
     errors = {
         "Too short (min 12 chars)": length_error,
         "Missing digit": digit_error,
@@ -35,7 +35,7 @@ def password_strength(password):
     issues = [err for err, failed in errors.items() if failed]
     return strength, issues, score
 
-# --- Example run ---
+# Example run
 if __name__ == "__main__":
     pwd = input("Enter a password to check: ")
     strength, issues, score = password_strength(pwd)
