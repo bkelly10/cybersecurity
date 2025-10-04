@@ -2,6 +2,7 @@ import re
 import sys
 from datetime import datetime, timedelta
 from collections import deque, defaultdict
+import subprocess
 
 # standard regex strings to indentify IP addresses and Usernames
 
@@ -50,15 +51,28 @@ def find_failed_event(line):
 
 
 #TEMP TEST BLOCK TO ENSURE FUNCTIONING
-if __name__ == "__main__":
-    samples = [
-        "Failed password for invalid user admin from 192.0.2.10 port 54422 ssh2",
-        "Failed password for root from 198.51.100.5 port 34211 ssh2",
-        "authentication failure; rhost=203.0.113.12  user=guest",
-        "unrelated line",
+def iter_macos_sshd_log(last="1h"):
+    """
+    Yield lines from macOS's unified log filtered to the sshd process.
+    Example 'last' values: '30m', '1h', '24h'.
+    """
+    cmd = [
+        "log", "show",
+        "--predicate", 'process == "sshd"',
+        "--info",
+        "--last", last,
     ]
-    for s in samples:
-        result = find_failed_event(s)
+    # capture text output; ignore decoding errors just in case
+    proc = subprocess.run(cmd, capture_output=True, text=True, errors="ignore")
+    # iterate over each log line
+    for line in proc.stdout.splitlines():
+        yield line
+
+
+if __name__ == "__main__":
+    # Pull the last hour of sshd logs from macOS and parse them
+    for line in iter_macos_sshd_log(last="1h"):
+        result = find_failed_event(line)
         if result:
             user, ip = result
             print(f"User: {user}, IP: {ip}")
