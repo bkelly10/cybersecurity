@@ -6,7 +6,7 @@ from collections import deque, defaultdict
 # standard regex strings to indentify IP addresses and Usernames
 
 IP = r'(?:\d{1,3}\.){3}\d{1,3}'
-USER = r'/S+'
+USER = r'\S+'
 
 # Creating a list of patterns to loop through as there are a variety of ways a login attempt could fail
 
