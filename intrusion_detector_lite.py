@@ -46,7 +46,7 @@ def find_failed_event(line):
       ip = match.group('ip')
       return user, ip
       
-  return none
+  return None
 
 
 #TEMP TEST BLOCK TO ENSURE FUNCTIONING
