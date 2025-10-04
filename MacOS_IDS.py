@@ -51,31 +51,31 @@ def find_failed_event(line):
 
 
 #TEMP TEST BLOCK TO ENSURE FUNCTIONING
-def iter_macos_sshd_log(last="1h"):
-    """
-    Yield lines from macOS's unified log filtered to the sshd process.
-    Example 'last' values: '30m', '1h', '24h'.
-    """
+def iter_macos_sshd_log(last="24h"):
+    """Yield sshd-related lines from macOS unified log."""
     cmd = [
         "log", "show",
-        "--predicate", 'process == "sshd"',
-        "--info",
+        "--style", "syslog",
+        "--predicate",
+        'process == "sshd" AND (eventMessage CONTAINS[c] "Failed password" OR eventMessage CONTAINS[c] "Invalid user" OR eventMessage CONTAINS[c] "authentication failure")',
+        "--info", "--debug",
         "--last", last,
     ]
-    # capture text output; ignore decoding errors just in case
-    proc = subprocess.run(cmd, capture_output=True, text=True, errors="ignore")
-    # iterate over each log line
-    for line in proc.stdout.splitlines():
+    result = subprocess.run(cmd, capture_output=True, text=True, errors="ignore")
+    for line in result.stdout.splitlines():
         yield line
 
 
-if __name__ == "__main__":
-    # Pull the last hour of sshd logs from macOS and parse them
-    for line in iter_macos_sshd_log(last="1h"):
-        result = find_failed_event(line)
-        if result:
-            user, ip = result
+def process_lines(lines):
+    """Process lines and print detected user/IP pairs."""
+    found = False
+    for line in lines:
+        match = find_failed_event(line)
+        if match:
+            user, ip = match
             print(f"User: {user}, IP: {ip}")
+            found = True
+    return found
 
 
 
