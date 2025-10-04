@@ -35,6 +35,20 @@ PATTERNS = [
 
 ]
 
+#Define function to search patterns
+def find_failed_event(line): 
+  
+  for p in PATTERNS:
+    match = p.search(line)
+    
+    if match:
+      user = match.group('user')
+      ip = match.group('ip')
+      return user, ip
+      
+  return none
+
+
 #TEMP TEST BLOCK TO ENSURE FUNCTIONING
 if __name__ == "__main__":
     samples = [
@@ -48,17 +62,6 @@ if __name__ == "__main__":
         if result:
             user, ip = result
             print(f"User: {user}, IP: {ip}")
-
-
-def find_failed_event(line): 
-  
-  for p in PATTERNS:
-    match = p.search(line)
-    if match:
-      user = match.group('user')
-      ip = match.group('ip')
-      return user, ip
-    return none
 
 
 
