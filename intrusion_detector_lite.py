@@ -38,10 +38,9 @@ PATTERNS = [
 #TEMP TEST BLOCK TO ENSURE FUNCTIONING
 if __name__ == "__main__":
     samples = [
-        "Oct  4 16:56:02 myhost sshd[1234]: Failed password for invalid user admin from 192.0.2.10 port 54422 ssh2",
-        "Oct  4 16:57:00 myhost sshd[1234]: Failed password for root from 198.51.100.5 port 34211 ssh2",
+        "Failed password for invalid user admin from 192.0.2.10 port 54422 ssh2",
+        "Failed password for root from 198.51.100.5 port 34211 ssh2",
         "authentication failure; rhost=203.0.113.12  user=guest",
-        "unrelated line",
     ]
     for s in samples:
         for p in PATTERNS:
