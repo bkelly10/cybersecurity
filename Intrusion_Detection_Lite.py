@@ -14,7 +14,7 @@ PATTERNS = [
   #Invalid username, the password doesn't matter because the username isn't valid
   #Using rf' so that I can use raw strings but also insert variables
   
-  re.complile(
+  re.compile(
     rf'Failed password for invalid user (?P<user>{USER}) from (?P<ip>{IP})',
     re.IGNORECASE
   ),
@@ -29,7 +29,7 @@ PATTERNS = [
   #Scanning SSHD logs to identify login attempts, and specifically catching when PAM reports failed credential checks
   
   re.compile(
-    rf'authentication failure.*rhost=(?P<ip{IP}).*user=(?P<user>{USER})',
+    rf'authentication failure.*rhost=(?P<ip>{IP}).*user=(?P<user>{USER})',
     re.IGNORECASE
   )
 
