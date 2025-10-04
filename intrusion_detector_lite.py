@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
 def find_failed_event(line): 
   for p in PATTERNS:
-    match p.search(line)
+    match = p.search(line)
     if match:
       user = match.group('user')
       ip = match.group('ip')
