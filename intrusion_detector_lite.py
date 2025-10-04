@@ -41,15 +41,24 @@ if __name__ == "__main__":
         "Failed password for invalid user admin from 192.0.2.10 port 54422 ssh2",
         "Failed password for root from 198.51.100.5 port 34211 ssh2",
         "authentication failure; rhost=203.0.113.12  user=guest",
+        "unrelated line",
     ]
     for s in samples:
-        for p in PATTERNS:
-            m = p.search(s)
-            if m:
-                print("Matched pattern:", p.pattern)
-                print("User:", m.group('user'))
-                print("IP:", m.group('ip'))
-                print()
+        result = find_failed_event(s)
+        if result:
+            user, ip = result
+            print(f"User: {user}, IP: {ip}")
+
+
+def find_failed_event(line): 
+  for p in PATTERNS:
+    match p.search(line)
+    if match:
+      user = match.group('user')
+      ip = match.group('ip')
+      return user, ip
+
+return none
 
 
 
