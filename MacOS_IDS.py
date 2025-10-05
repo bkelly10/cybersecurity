@@ -72,6 +72,24 @@ def process_lines(lines):
             found = True
     return found
 
+if __name__ == "__main__":
+    # If a file path is provided, read it; otherwise use macOS logs
+    if len(sys.argv) > 1:
+        logfile = sys.argv[1]
+        try:
+            with open(logfile, "r", errors="ignore") as f:
+                found = process_lines(f)
+            if not found:
+                print(f"No failed logins found in {logfile}.")
+        except FileNotFoundError:
+            print(f"Error: file '{logfile}' not found.")
+        except PermissionError:
+            print(f"Error: permission denied reading '{logfile}'. Try using sudo.")
+    else:
+        found = process_lines(iter_macos_sshd_log(last="24h"))
+        if not found:
+            print("No sshd auth failures found in the last 24h.")
+
 
 
   
