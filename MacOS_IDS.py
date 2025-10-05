@@ -31,7 +31,10 @@ PATTERNS = [
 ]
 
 
-# Define function to search patterns
+# Define function to search patterns in a log file, looping through the patterns listed above
+# p.search to identify any match (match object) in the log line
+# if there is a match, save whatever the regex captured for user and ip 
+# Return as a tuple so its immutable
 def find_failed_event(line): 
   
   for p in PATTERNS:
@@ -45,7 +48,10 @@ def find_failed_event(line):
   return None
 
 
-# Yield SSHD-related lines from a MacOS log (sample log)
+# Bridge python with MacOS logs by iterating over SSHD log lines from MacOS
+# Create a list of the terminal commands I want to run and save as a variable to increase efficiency
+# Loop through the output text from MacOS logs
+# Yield line (result) so that the script runs through each line one at a time, and doesn't end a function like return
 def iter_macos_sshd_log(last="24h"):
     
     cmd = [
@@ -60,6 +66,7 @@ def iter_macos_sshd_log(last="24h"):
     for line in result.stdout.splitlines():
         yield line
 
+# Core loop that ties in previous functions
 # Process lines and print any detected user/IP pairs
 def process_lines(lines):
 
@@ -72,8 +79,11 @@ def process_lines(lines):
             found = True
     return found
 
+# First, the script checks to see if there is a log file path 
+# If there is, it opens the log file path, scans for failed SSHD logins, and prints results
+# If no file provided, will autmoateically scan MacOS file logs for past 24 hours
 if __name__ == "__main__":
-    # If a file path is provided, read it; otherwise use macOS logs
+
     if len(sys.argv) > 1:
         logfile = sys.argv[1]
         try:
