@@ -4,16 +4,16 @@ import subprocess
 from datetime import datetime, timedelta
 from collections import deque, defaultdict
 
-# standard regex strings to indentify IP addresses and Usernames
+# Standard regex strings to indentify IP addresses and usernames
 
 IP = r'(?:\d{1,3}\.){3}\d{1,3}'
 USER = r'\S+'
 
 # Creating a list of patterns to loop through as there are a variety of ways a login attempt could fail
-#Using rf' so that I can use raw strings but also insert variables
-#1 Invalid username, the password doesn't matter because the username isn't valid
-#2 Right username, but authentication failed
-#3 Scanning SSHD logs to identify login attempts, and specifically catching when PAM reports failed credential checks
+# Using rf' so that I can use raw strings but also insert variables
+# p1 Invalid username, the password doesn't matter because the username isn't valid
+# p2 Right username, but authentication failed
+# p3 Scanning SSHD logs to identify login attempts, and specifically catching when PAM reports failed credential checks
 
 PATTERNS = [
     re.compile(
@@ -31,7 +31,7 @@ PATTERNS = [
 ]
 
 
-#Define function to search patterns
+# Define function to search patterns
 def find_failed_event(line): 
   
   for p in PATTERNS:
@@ -45,7 +45,7 @@ def find_failed_event(line):
   return None
 
 
-#Yield SSHD-related lines from a MacOS log (sample log)
+# Yield SSHD-related lines from a MacOS log (sample log)
 def iter_macos_sshd_log(last="24h"):
     
     cmd = [
