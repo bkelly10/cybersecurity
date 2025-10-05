@@ -45,9 +45,9 @@ def find_failed_event(line):
   return None
 
 
-#TEMP TEST BLOCK TO ENSURE FUNCTIONING
+#Yield SSHD-related lines from a MacOS log (sample log)
 def iter_macos_sshd_log(last="24h"):
-    """Yield sshd-related lines from macOS unified log."""
+    
     cmd = [
         "log", "show",
         "--style", "syslog",
@@ -60,9 +60,9 @@ def iter_macos_sshd_log(last="24h"):
     for line in result.stdout.splitlines():
         yield line
 
-
+# Process lines and print any detected user/IP pairs
 def process_lines(lines):
-    """Process lines and print detected user/IP pairs."""
+
     found = False
     for line in lines:
         match = find_failed_event(line)
