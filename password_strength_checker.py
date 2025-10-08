@@ -44,6 +44,7 @@ def password_strength(password):
     return strength, issues, score, hashed_pw
 
 # Main program execution
+# Prints results, hash, and also stores hash into a txt file
 
 if __name__ == "__main__":
     pwd = input("Enter a password to check: ")
