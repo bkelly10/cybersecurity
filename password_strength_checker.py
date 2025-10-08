@@ -1,4 +1,5 @@
 import re
+import hashlib
 
 # Create a criteria check list to determine password strength
 
@@ -24,7 +25,7 @@ def password_strength(password):
 
     score = 6 - sum(errors.values())
 
-    # Strength buckets: 6 = Very Strong; 5 = Strong; 4 = Moderate; 3 and lower is marked as Weak
+    # Create strength buckets
     
     if score == 6:
         strength = "Very Strong"
@@ -35,16 +36,17 @@ def password_strength(password):
     else:
         strength = "Weak"
 
+    # Hash password
+    hashed_pw = hashlib.sha256(password.encode()).hexdigest()
+    
     issues = [err for err, failed in errors.items() if failed]
     return strength, issues, score
 
-# This is where I execute the program
-# First, user is called to input a password
-# Next, the input is run through my password strength function
-# Then it returns three values after the function runs our regex checks
+# Main program execution
+
 if __name__ == "__main__":
     pwd = input("Enter a password to check: ")
-    strength, issues, score = password_strength(pwd)
+    strength, issues, score, hashed_pw = password_strength(pwd)
     print(f"\nPassword Strength: {strength} ({score}/6)")
     if issues:
         print("Issues:")
@@ -52,3 +54,25 @@ if __name__ == "__main__":
             print(f"- {issue}")
     else:
         print("This password meets all requirements!")
+    
+    print(f"\nSHA-256 Hash:\n{hashed_pw}")
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
