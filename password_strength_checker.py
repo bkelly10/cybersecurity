@@ -40,7 +40,8 @@ def password_strength(password):
     hashed_pw = hashlib.sha256(password.encode()).hexdigest()
     
     issues = [err for err, failed in errors.items() if failed]
-    return strength, issues, score
+    
+    return strength, issues, score, hashed_pw
 
 # Main program execution
 
