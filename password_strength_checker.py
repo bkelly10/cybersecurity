@@ -57,7 +57,7 @@ if __name__ == "__main__":
         print("This password meets all requirements!")
     
     print(f"\nSHA-256 Hash:\n{hashed_pw}")
-    with open ("hashed_passwords.txt", "a" as file:
+    with open ("hashed_passwords.txt", "a") as file:
         file.write(f"{hashed_pw}\n")
     
     print("\n Hashed saved securely to 'hashed_passwords.txt'")
