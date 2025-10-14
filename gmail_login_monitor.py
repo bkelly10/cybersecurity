@@ -91,17 +91,16 @@ def ensure_label(service, label_name):
 # Searches the user's Gmail inbox for messages matching the query and returns a list of message IDs
 
 def search_messages(service, query, max_results=50):
-  
-  # needed to use "dot chain" to access Gmail API's heirarchy
-  # .list method returns up to 100 messages per request
-  # need a loop to retrieve all matches in a larger inbox / environment
-  response = service.users().messages().list(
+    # needed to use "dot chain" to access Gmail API's hierarchy
+    # .list method returns up to 100 messages per request
+    # need a loop to retrieve all matches in a larger inbox / environment
+    response = service.users().messages().list(
         userId='me',
         q=query,
         maxResults=max_results
     ).execute()
-   
-    # returns the list of message IDs if present, or an empty list as a safe fallback 
+
+    # returns the list of message IDs if present, or an empty list as a safe fallback
     return response.get('messages', [])
 
 # function to grab the full message by ID 
