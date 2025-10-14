@@ -18,10 +18,14 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'] # scopes is inside a
 CREDENTIALS_FILE = os.getenv("GMAIL_CREDENTIALS", "credentials.json")
 TOKEN_FILE       = os.getenv("GMAIL_TOKEN", "token.pickle")
 
-SEARCH_QUERY = (
-  'from:(no-reply@accounts.google.com OR accounts-noreply@google.com OR no-reply@google.com) '
-    'subject:("New sign-in" OR "Sign-in attempt" OR "New sign-in to your Google Account" OR "Suspicious sign-in attempt")'
-)  # Gmail search query to find Google sign-in / security alert emails
+
+SEARCH_QUERY = 'from:me subject:"gmail monitor test" newer_than:1d'
+
+# This is my main search query. running a test query to ensure functionality
+#SEARCH_QUERY = (
+#  'from:(no-reply@accounts.google.com OR accounts-noreply@google.com OR no-reply@google.com) '
+#    'subject:("New sign-in" OR "Sign-in attempt" OR "New sign-in to your Google Account" OR "Suspicious sign-in attempt")'
+#)  # Gmail search query to find Google sign-in / security alert emails
 
 SCAN_INTERVAL = 60  # how often script scans for new alerts in seconds
 
