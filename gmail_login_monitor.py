@@ -15,10 +15,10 @@ from googleapiclient.discovery import build                # creates Gmail API s
 
 # variable configuration "constants"
 
-SCOPES = ['https://www.googleapis.com/auth/gmail.modify'] # scopes is inside a list because Google's autho client expects list of strings since you can request multiple permissions at once
+SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'] # scopes is inside a list because Google's autho client expects list of strings since you can request multiple permissions at once
 
-CREDENTIALS_FILE = 'credentials.json' 
-TOKEN_FILE = 'token.pickle'
+CREDENTIALS_FILE = os.getenv("GMAIL_CREDENTIALS", "credentials.json")
+TOKEN_FILE       = os.getenv("GMAIL_TOKEN", "token.pickle")
 
 SEARCH_QUERY = (
   'from:(no-reply@accounts.google.com OR accounts-noreply@google.com OR no-reply@google.com) '
