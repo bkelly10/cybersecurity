@@ -1,0 +1,11 @@
+﻿# logs & caches
+*.log
+__pycache__/
+*.pyc
+
+# secrets (even if you keep them outside the repo)
+credentials.json
+token.pickle
+
+# local data
+hashed_passwords.txt
