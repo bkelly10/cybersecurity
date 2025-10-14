@@ -4,14 +4,12 @@
 import os
 import pickle
 import time
-import re
 import logging
-from datetime import datetime
 
 # google imports
 from google.auth.transport.requests import Request         # refresh tokens when access token expires
 from google_auth_oauthlib.flow import InstalledAppFlow     # manages browser-based OAuth flow for Google login
-from googleapiclient.discovery import build                # creates Gmail API service object used to read and label messages
+from googleapiclient.discovery import build                # creates Gmail API service object used to read messages
 
 # variable configuration "constants"
 
@@ -28,24 +26,20 @@ SEARCH_QUERY = (
 SCAN_INTERVAL = 60  # how often script scans for new alerts in seconds
 
 LOGFILE = 'gmail_signin_monitor.log'
-LABEL_NAME = 'Signin-Alerts/Processed'
 
 # added so Python logging can be captured 
 logging.basicConfig(
-    filename=LOGFILE,
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s: %(message)s"
+    format="%(asctime)s %(levelname)s: %(message)s",
+    handlers=[
+        logging.FileHandler(LOGFILE, encoding="utf-8"),
+        logging.StreamHandler()
+    ]
 )
-logging.info("Logging initialized")
 
 # Gmail Auth / Connection Function
 
 def get_gmail_service():
-
-    # import Google libraries locally  
-    from google.auth.transport.requests import Request
-    from google_auth_oauthlib.flow import InstalledAppFlow
-    from googleapiclient.discovery import build
 
     creds = None # holds authenticated credentials
 
@@ -77,25 +71,6 @@ def get_gmail_service():
     # Build Gmail service client
     return build('gmail', 'v1', credentials=creds)
 
-# function to ensure Gmail label exists
-
-def ensure_label(service, label_name):
- 
-    results = service.users().labels().list(userId='me').execute()
-    labels = results.get('labels', [])
-
-    for lab in labels:
-        if lab.get('name') == label_name:
-            return lab['id']
-
-    label_body = {
-        'name': label_name,
-        'labelListVisibility': 'labelShow',
-        'messageListVisibility': 'show'
-    }
-    new_label = service.users().labels().create(userId='me', body=label_body).execute()
-    return new_label['id']
-
 # Searches the user's Gmail inbox for messages matching the query and returns a list of message IDs
 
 def search_messages(service, query, max_results=50):
@@ -124,17 +99,15 @@ def get_message(service, msg_id):
     ).execute()
 
 # Defining monitor loop after helper functions
-# Polls Gmail for likely Google sign-in/security alert emails, logs a brief line, labels them to avoid reprocessing, then sleeps
+# Polls Gmail for likely Google sign-in/security alert emails, logs a brief line, then sleeps (read-only; no message changes)
 
 def monitor_loop():
     service = get_gmail_service()
-    label_id = ensure_label(service, LABEL_NAME)
     seen = set()
 
     print(f"Polling every {SCAN_INTERVAL}s. Logging to: {LOGFILE}. Press Ctrl+C to stop.")
 
-    # outer try is to help program exit gracefully or log issue
-    # inner try keeps any labeling fails contained, continued to next message
+    # allow graceful exit (Ctrl+C) and prevent a crash from bubbling up
     try:
         while True:
             results = search_messages(service, SEARCH_QUERY, max_results=50) or []
@@ -148,16 +121,7 @@ def monitor_loop():
                 snippet = msg.get('snippet', '') or ''
 
                 logging.info(f"[ALERT?] id={message_id} snippet={snippet}")
-
-                try:
-                    service.users().messages().modify(
-                        userId='me',
-                        id=message_id,
-                        body={'addLabelIds': [label_id]}
-                    ).execute()
-                except Exception as e:
-                    logging.warning(f"Failed to label message {message_id}: {e}")
-
+              
                 seen.add(message_id)
 
             time.sleep(SCAN_INTERVAL)
