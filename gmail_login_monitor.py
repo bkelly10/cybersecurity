@@ -19,7 +19,7 @@ CREDENTIALS_FILE = os.getenv("GMAIL_CREDENTIALS", "credentials.json")
 TOKEN_FILE       = os.getenv("GMAIL_TOKEN", "token.pickle")
 
 
-SEARCH_QUERY = 'from:me subject:"gmail monitor test" newer_than:1d'
+SEARCH_QUERY = 'from:me subject:"gmail monitor test" newer_than:1d' # set from me and subject gmail monitor test to test program
 
 # This is my main search query. running a test query to ensure functionality
 #SEARCH_QUERY = (
