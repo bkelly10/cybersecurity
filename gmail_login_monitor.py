@@ -30,6 +30,14 @@ SCAN_INTERVAL = 60  # how often script scans for new alerts in seconds
 LOGFILE = 'gmail_signin_monitor.log'
 LABEL_NAME = 'Signin-Alerts/Processed'
 
+# added so Python logging can be captured 
+logging.basicConfig(
+    filename=LOGFILE,
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s: %(message)s"
+)
+logging.info("Logging initialized")
+
 # Gmail Auth / Connection Function
 
 def get_gmail_service():
