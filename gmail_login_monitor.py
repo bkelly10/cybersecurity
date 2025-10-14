@@ -88,7 +88,7 @@ def ensure_label(service, label_name):
     new_label = service.users().labels().create(userId='me', body=label_body).execute()
     return new_label['id']
 
-# function to query Gmail inbox using SEARCH_QUERY defined earlier
+# Searches the user's Gmail inbox for messages matching the query and returns a list of message IDs
 
 def search_messages(service, query, max_results=50):
   
@@ -104,9 +104,62 @@ def search_messages(service, query, max_results=50):
     # returns the list of message IDs if present, or an empty list as a safe fallback 
     return response.get('messages', [])
 
+# function to grab the full message by ID 
+def get_message(service, msg_id):
+    """
+    Fetch a single message by ID in 'full' format.
+    Returns the full message resource (headers, payload, snippet).
+    """
+    return service.users().messages().get(
+        userId='me',
+        id=msg_id,
+        format='full'  # alternatives: 'metadata', 'minimal', 'raw'
+    ).execute()
 
+# Defining monitor loop after helper functions
+# Polls Gmail for likely Google sign-in/security alert emails, logs a brief line, labels them to avoid reprocessing, then sleeps
 
+def monitor_loop():
+    service = get_gmail_service()
+    label_id = ensure_label(service, LABEL_NAME)
+    seen = set()
 
+    print(f"Polling every {SCAN_INTERVAL}s. Logging to: {LOGFILE}. Press Ctrl+C to stop.")
+
+    # outer try is to help program exit gracefully or log issue
+    # inner try keeps any labeling fails contained, continued to next message
+    try:
+        while True:
+            results = search_messages(service, SEARCH_QUERY, max_results=50) or []
+
+            for m in results:
+                message_id = m['id']
+                if message_id in seen:
+                    continue
+
+                msg = get_message(service, message_id)
+                snippet = msg.get('snippet', '') or ''
+
+                logging.info(f"[ALERT?] id={message_id} snippet={snippet}")
+
+                try:
+                    service.users().messages().modify(
+                        userId='me',
+                        id=message_id,
+                        body={'addLabelIds': [label_id]}
+                    ).execute()
+                except Exception as e:
+                    logging.warning(f"Failed to label message {message_id}: {e}")
+
+                seen.add(message_id)
+
+            time.sleep(SCAN_INTERVAL)
+    except KeyboardInterrupt:
+        print("Stopping monitor.")
+
+# run login monitor
+if __name__ == "__main__":
+    monitor_loop()
 
 
 
