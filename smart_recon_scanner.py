@@ -12,8 +12,8 @@ def scan_host(host, start_port, end_port):
     for port in range(start_port, end_port +1):
         if scan_port(host, port):
             print(f"Port {port} is OPEN")
-            open_ports.apped(port)
+            open_ports.append(port)
     return open_ports        
 
 host = "127.0.0.1"
-open_ports = scan_hosts(host, 1, 1024)
+open_ports = scan_host(host, 1, 1024)
