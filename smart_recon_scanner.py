@@ -1,6 +1,6 @@
 import socket 
 
-def scan_port(host, port, timeout=2):
+def scan_port(host, port, timeout=1):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.settimeout(timeout)
     result = s.connect_ex((host, port))
@@ -26,7 +26,7 @@ def enumerate_services(host, open_ports):
         if port == 22:
             grab_ssh_banner(host, port)
 
-def grab_ssh_banner(host, port=22, timeout=2):
+def grab_ssh_banner(host, port=22, timeout=1):
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(timeout)
@@ -39,6 +39,6 @@ def grab_ssh_banner(host, port=22, timeout=2):
         s.close()
 
 host = "192.168.1.1"
-open_ports = scan_host(host, 1, 1024)
+open_ports = scan_host(host, 20, 445)
 enumerate_services(host, open_ports)
 
