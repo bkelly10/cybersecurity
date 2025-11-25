@@ -9,11 +9,21 @@ def scan_port(host, port, timeout=2):
 
 def scan_host(host, start_port, end_port):
     open_ports = []
+    
     for port in range(start_port, end_port +1):
         if scan_port(host, port):
             print(f"Port {port} is OPEN")
             open_ports.append(port)
+    
+    print("\nScan complete.")
+    print(f"Open ports found: {open_ports}\n")
+    
     return open_ports        
+
+def enumerate_services(host, open_ports): 
+    for port in open_ports:
+        print(f"[ENUM] ound open port {port}, checking service...")
 
 host = "127.0.0.1"
 open_ports = scan_host(host, 1, 1024)
+enumerate_services(host, open_ports)
