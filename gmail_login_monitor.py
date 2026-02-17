@@ -21,7 +21,7 @@ TOKEN_FILE       = os.getenv("GMAIL_TOKEN", "token.pickle")
 
 SEARCH_QUERY = 'from:me subject:"gmail monitor test" newer_than:1d' # set from me and subject gmail monitor test to test program
 
-# This is my main search query. running a test query to ensure functionality
+# This is the main search query. running a test query to ensure functionality
 #SEARCH_QUERY = (
 #  'from:(no-reply@accounts.google.com OR accounts-noreply@google.com OR no-reply@google.com) '
 #    'subject:("New sign-in" OR "Sign-in attempt" OR "New sign-in to your Google Account" OR "Suspicious sign-in attempt")'
@@ -65,7 +65,7 @@ def get_gmail_service():
                     "Download your OAuth client JSON from Google Cloud and place it beside this script."
                 )
             flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
-            # On Windows 11 this opens your default browser for Google sign-in
+            # On Windows 11 this opens the default browser for Google sign-in
             creds = flow.run_local_server(port=0)
 
         # Cache tokens for next run
